@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using OmniStream.API.Data;
 using OmniStream.API.Entities;
 
@@ -10,18 +11,18 @@ namespace OmniStream.API.Controllers
     public class WalletsController(LedgerContext context) : ControllerBase
     {
         [HttpGet]
-        public ActionResult<List<Wallet>> GetWallets()
+        public async Task<ActionResult<List<Wallet>>> GetWallets()
         {
-            return context.Wallets.ToList();
+            return await context.Wallets.ToListAsync();
         }
 
-        [HttpGet("{id}")]
-        public ActionResult<Wallet> GetWallet(Guid id)
+        [HttpGet("{id}")]   
+        public async Task<ActionResult<Wallet>> GetWallet(Guid id)
         {
-            var wallet = context.Wallets.Find(id);
+            var wallet = await context.Wallets.FindAsync(id);
 
             if (wallet == null) return NotFound();
-            
+
             return wallet;
         }
     }
